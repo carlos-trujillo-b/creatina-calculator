@@ -1,0 +1,111 @@
+/* App.module.css */
+
+/* Estilos base */
+.App {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.inputGroup {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.prediccion {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Estilos para tablets */
+@media (min-width: 600px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  input,
+  select {
+    width: 100%;
+  }
+
+  button {
+    width: auto;
+    padding: 10px 20px;
+  }
+}
+
+/* Estilos para PCs */
+@media (min-width: 900px) {
+  .App {
+    padding: 40px;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  .inputGroup {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  label {
+    flex: 1;
+    margin-bottom: 0;
+    margin-right: 10px;
+  }
+
+  input,
+  select {
+    flex: 2;
+  }
+
+  button {
+    width: auto;
+    padding: 10px 30px;
+  }
+}
