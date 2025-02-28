@@ -3,9 +3,10 @@ import styles from "./App.module.css";
 
 function App() {
   const [prediccion, setPrediccion] = useState(null);
+  const [error, setError] = useState(null);
   const [inputs, setInputs] = useState({
     edad: 60,
-    peso: 75,
+    peso: 70,
     sexo: 0, // 0: Hombre, 1: Mujer
     creatinina_plasma: 1.2,
   });
@@ -14,12 +15,35 @@ function App() {
   const hacerPrediccion = () => {
     const { edad, peso, sexo, creatinina_plasma } = inputs;
 
+    // Validar los inputs
+    if (edad < 0 || peso < 0 || creatinina_plasma < 0) {
+      setError("Los inputs no pueden ser negativos");
+      return;
+    }
+
+    if (edad > 120) {
+      setError("La edad no puede ser mayor a 120");
+      return;
+    }
+
+    if (peso > 300) {
+      setError("La fórmula no se ajusta a pesos mayores a 300kg");
+      return;
+    }
+
+    setError(null);
+
     // Calcular la predicción: y = intercepto + coef1*x1 + coef2*x2 + ...
     const prediccion =
       ((0.0017 * edad) ^ (2 - 0.8387 * edad + 105.17)) * 0.1735 +
       ((-0.0031 * peso) ^ (2 + 0.6391 * peso + 43.15)) * 0.0436 +
       (96.094 * sexo - 8.6234) * 0.0436 +
       (-48.99 * Math.log(creatinina_plasma) + 83.97) * 0.7436;
+
+    if (prediccion < 0) {
+      setError("El cálculo de la Creatina no puede ser negativa");
+      return;
+    }
     setPrediccion(prediccion.toFixed(2)); // Redondear a 2 decimales
   };
 
@@ -34,13 +58,17 @@ function App() {
 
   return (
     <div className={styles.App}>
-      <h1>Predicción de Creatinina Real</h1>
+      <h1>
+        Valoración de aclaramiento de creatinina <br />
+        FOTC.HEG
+      </h1>
       <div className={styles.inputGroup}>
         <label>Edad:</label>
         <input
           type="number"
           name="edad"
           value={inputs.edad}
+          required
           onChange={handleInputChange}
         />
       </div>
@@ -69,12 +97,14 @@ function App() {
           onChange={handleInputChange}
         />
       </div>
+      {error && <p className={styles.error}>{error}</p>}
+
       <button className={styles.button} onClick={hacerPrediccion}>
-        Predecir
+        Calcular
       </button>
       {prediccion !== null && (
         <div className={styles.prediccion}>
-          <h2>Predicción: {prediccion}</h2>
+          <h2>Creatinina: {prediccion}</h2>
         </div>
       )}
     </div>
