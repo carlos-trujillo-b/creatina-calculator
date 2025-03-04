@@ -5,10 +5,10 @@ function App() {
   const [prediccion, setPrediccion] = useState(null);
   const [error, setError] = useState(null);
   const [inputs, setInputs] = useState({
-    edad: 60,
-    peso: 70,
-    sexo: 0, // 0: Hombre, 1: Mujer
-    creatinina_plasma: 1.2,
+    edad: 68,
+    peso: 66.5,
+    sexo: 1, // 0: Hombre, 1: Mujer
+    creatinina_plasma: 3.9,
   });
 
   // Función para hacer la predicción
@@ -35,10 +35,10 @@ function App() {
 
     // Calcular la predicción: y = intercepto + coef1*x1 + coef2*x2 + ...
     const prediccion =
-      ((-0.0141 * edad) ^ (2 + 1.1469 * edad + 63.608)) +
-      ((10.892 * peso) ^ 0.1104) * 0.0436 +
-      (91.888 * sexo - 5.1365) * 0.0436 +
-      (-49.62 * Math.log(creatinina_plasma) + 84.02) * 0.7436;
+      (-0.0141 * Math.pow(edad, 2) + 1.1469 * edad + 63.608) * 0.08284024 +
+      10.892 * Math.pow(peso, 0.4409) * 0.04675999 +
+      (91.888 * sexo - 5.1365) * 0.03997691 +
+      (-49.62 * Math.log(creatinina_plasma) + 84.02) * 0.83042286;
 
     if (prediccion < 0) {
       setError("El cálculo de la Creatina no puede ser negativa");
