@@ -59,7 +59,7 @@ function App() {
   return (
     <div className={styles.App}>
       <h1>
-        Estimación de aclaramiento de creatinina <br />
+        Estimación del aclaramiento de creatinina <br />
         FOTC.HEG
       </h1>
       <div className={styles.inputGroup}>
