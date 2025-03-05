@@ -59,7 +59,7 @@ function App() {
   return (
     <div className={styles.App}>
       <h1>
-        Valoración de aclaramiento de creatinina <br />
+        Estimación de aclaramiento de creatinina <br />
         FOTC.HEG
       </h1>
       <div className={styles.inputGroup}>
@@ -84,8 +84,8 @@ function App() {
       <div className={styles.inputGroup}>
         <label>Sexo:</label>
         <select name="sexo" value={inputs.sexo} onChange={handleInputChange}>
-          <option value={0.87}>Hombre</option>
-          <option value={1}>Mujer</option>
+          <option value={1}>Hombre</option>
+          <option value={0.87}>Mujer</option>
         </select>
       </div>
       <div className={styles.inputGroup}>
@@ -104,7 +104,7 @@ function App() {
       </button>
       {prediccion !== null && (
         <div className={styles.prediccion}>
-          <h2>Creatinina: {prediccion}</h2>
+          <h2>Aclaramiento calculado de Creatinina: {prediccion}</h2>
         </div>
       )}
     </div>
