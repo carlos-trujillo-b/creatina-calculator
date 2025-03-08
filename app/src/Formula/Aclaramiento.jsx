@@ -1,3 +1,5 @@
+import * as ort from "onnxruntime-web";
+
 import { useState } from "react";
 import "./aclaramiento.css";
 
@@ -6,6 +8,7 @@ function Aclaramiento() {
   const [prediccionMDR4, setPrediccionMDR4] = useState(null);
   const [prediccionCKDEPI, setPrediccionCKDEPI] = useState(null);
   const [prediccionCockro, setPrediccionCockro] = useState(null);
+  const [prediccionRandomForest, setPredictionRandomForest] = useState(null);
   const [error, setError] = useState(null);
   const [inputs, setInputs] = useState({
     edad: 68,
@@ -67,6 +70,27 @@ function Aclaramiento() {
     setPrediccionCockro(prediccion.toFixed(2));
   };
 
+  const runModel = async () => {
+    try {
+      // Convertir el objeto `inputs` en un array en el orden correcto
+      const inputArray = [inputs.edad, inputs.peso, inputs.sexo, inputs.creatinina_plasma, inputs.raza];
+
+      // Crear la sesión del modelo
+      const session = await ort.InferenceSession.create("/modelo_random_forest.onnx");
+
+      // Crear el tensor de entrada
+      const inputTensor = new ort.Tensor("float32", new Float32Array(inputArray), [1, 5]);
+
+      // Ejecutar el modelo
+      const outputs = await session.run({ float_input: inputTensor });
+
+      // Mostrar la predicción
+      setPredictionRandomForest(outputs.label.data[0]);
+    } catch (error) {
+      console.error("Error al ejecutar la predicción:", error);
+    }
+  };
+
   // Función para hacer la predicción
   const hacerPrediccion = () => {
     const { edad, peso, creatinina_plasma } = inputs;
@@ -93,6 +117,8 @@ function Aclaramiento() {
     calcularMDR4();
     calcularCKDEPI();
     calcularCockro();
+
+    runModel();
 
     if (prediccion < 0 || prediccionMDR4 < 0 || prediccionCKDEPI < 0 || prediccionCockro < 0) {
       setError("El cálculo de la Creatina no puede ser negativa");
@@ -146,10 +172,11 @@ function Aclaramiento() {
         {prediccion !== null && (
           <div className="prediccion">
             <h2>Aclaramiento de Creatinina</h2>
-            <h3>FOTC: {prediccion}</h3>
+            <h3>FOTC-HEG: {prediccion}</h3>
             <h3>MDR4: {prediccionMDR4}</h3>
             <h3>CKD-EPI: {prediccionCKDEPI}</h3>
             <h3>Cockcroft-Gault: {prediccionCockro}</h3>
+            <h3>Random Forest: {prediccionRandomForest}</h3>
           </div>
         )}
       </div>
