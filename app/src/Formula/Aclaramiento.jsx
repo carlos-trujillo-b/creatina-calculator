@@ -1,7 +1,6 @@
-import * as ort from "onnxruntime-web";
-
 import { useState } from "react";
 import "./aclaramiento.css";
+import { predict } from "../models/RandomForestModel.js";
 
 function Aclaramiento() {
   const [prediccion, setPrediccion] = useState(null);
@@ -17,6 +16,14 @@ function Aclaramiento() {
     creatinina_plasma: 3.9,
     raza: 0, // 0: Blanca, 1: Negra
   });
+
+  const handlePredict = () => {
+    const { edad, sexo, creatinina_plasma, peso } = inputs;
+
+    // Llama a la función predict del modelo
+    const result = predict([sexo, edad, peso, creatinina_plasma]);
+    setPredictionRandomForest(result.toFixed(2));
+  };
 
   const calcularFOTC = () => {
     const { edad, sexo, creatinina_plasma, peso } = inputs;
@@ -54,7 +61,6 @@ function Aclaramiento() {
 
     if (creatinina_plasma > 0.9 && sexo === 0) {
       const prediccion = 141 * Math.pow(creatinina_plasma / 0.9, -1.209) * Math.pow(0.993, edad) * factorRaza;
-      console.log(Math.pow(0.993, edad));
       setPrediccionCKDEPI(prediccion.toFixed(2));
     }
     if (creatinina_plasma < 0.9 && sexo === 0) {
@@ -70,29 +76,8 @@ function Aclaramiento() {
     setPrediccionCockro(prediccion.toFixed(2));
   };
 
-  const runModel = async () => {
-    try {
-      // Convertir el objeto `inputs` en un array en el orden correcto
-      const inputArray = [inputs.edad, inputs.peso, inputs.sexo, inputs.creatinina_plasma, inputs.raza];
-
-      // Crear la sesión del modelo
-      const session = await ort.InferenceSession.create("/modelo_random_forest.onnx");
-
-      // Crear el tensor de entrada
-      const inputTensor = new ort.Tensor("float32", new Float32Array(inputArray), [1, 5]);
-
-      // Ejecutar el modelo
-      const outputs = await session.run({ float_input: inputTensor });
-
-      // Mostrar la predicción
-      setPredictionRandomForest(outputs.label.data[0]);
-    } catch (error) {
-      console.error("Error al ejecutar la predicción:", error);
-    }
-  };
-
   // Función para hacer la predicción
-  const hacerPrediccion = () => {
+  const hacerPrediccion = async () => {
     const { edad, peso, creatinina_plasma } = inputs;
 
     // Validar los inputs
@@ -117,8 +102,9 @@ function Aclaramiento() {
     calcularMDR4();
     calcularCKDEPI();
     calcularCockro();
+    handlePredict();
 
-    runModel();
+    // Llama a la función predict del modelo
 
     if (prediccion < 0 || prediccionMDR4 < 0 || prediccionCKDEPI < 0 || prediccionCockro < 0) {
       setError("El cálculo de la Creatina no puede ser negativa");
