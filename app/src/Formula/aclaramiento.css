@@ -1,5 +1,11 @@
 /* App.module.css */
 
+:root {
+  --desert-sand: #f87060;
+  --dark-blue: #102542;
+  --white: #fff;
+}
+
 /* Estilos base */
 .container {
   display: flex;
@@ -48,8 +54,8 @@ button {
   width: 100%;
   padding: 10px;
   font-size: 1.5rem;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--dark-blue);
+  color: var(--desert-sand);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -86,6 +92,10 @@ button:hover {
   button {
     width: auto;
     padding: 10px 20px;
+  }
+
+  button:hover {
+    background-color: #0056b3;
   }
 }
 
