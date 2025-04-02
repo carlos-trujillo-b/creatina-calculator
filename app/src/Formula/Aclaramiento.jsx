@@ -41,38 +41,37 @@ function Aclaramiento() {
     let factorSexo = sexo === 0 ? 1 : 0.742;
     let factorRaza = raza === 0 ? 1 : 1.212;
 
-    const prediccion = 186 * Math.pow(creatinina_plasma, -1.154) * Math.pow(edad, -0.203) * factorSexo * factorRaza;
+    const prediccion =
+      186 *
+      Math.pow(creatinina_plasma, -1.154) *
+      Math.pow(edad, -0.203) *
+      factorSexo *
+      factorRaza;
 
     setPrediccionMDR4(prediccion.toFixed(2));
   };
 
   const calcularCKDEPI = () => {
-    const { edad, sexo, creatinina_plasma, raza } = inputs;
-    let factorRaza = raza === 0 ? 1 : 1.159;
-    if (creatinina_plasma < 0.7 && sexo === 1) {
-      const prediccion = 144 * Math.pow(creatinina_plasma / 0.7, -0.329) * Math.pow(0.993, edad) * factorRaza;
-      setPrediccionCKDEPI(prediccion.toFixed(2));
-    }
+    const { edad, sexo, creatinina_plasma } = inputs;
+    let factorSexo = sexo === 0 ? 1 : 1.012;
+    let factorK = sexo === 0 ? 0.9 : 0.7;
+    let factorAlfa = sexo === 0 ? -0.302 : -0.241;
 
-    if (creatinina_plasma > 0.7 && sexo === 1) {
-      const prediccion = 144 * Math.pow(creatinina_plasma / 0.7, -1.209) * Math.pow(0.993, edad) * factorRaza;
-      setPrediccionCKDEPI(prediccion.toFixed(2));
-    }
+    const prediction =
+      142 *
+      Math.pow(creatinina_plasma / factorK, factorAlfa) *
+      Math.pow(creatinina_plasma / factorK, factorAlfa, -1.2) *
+      Math.pow(0.9938, edad) *
+      factorSexo;
 
-    if (creatinina_plasma > 0.9 && sexo === 0) {
-      const prediccion = 141 * Math.pow(creatinina_plasma / 0.9, -1.209) * Math.pow(0.993, edad) * factorRaza;
-      setPrediccionCKDEPI(prediccion.toFixed(2));
-    }
-    if (creatinina_plasma < 0.9 && sexo === 0) {
-      const prediccion = 141 * Math.pow(creatinina_plasma / 0.9, -0.411) * Math.pow(0.993, edad) * factorRaza;
-      setPrediccionCKDEPI(prediccion.toFixed(2));
-    }
+    setPrediccionCKDEPI(prediction.toFixed(2));
   };
 
   const calcularCockro = () => {
     const { edad, sexo, creatinina_plasma, peso } = inputs;
     let factorSexo = sexo === 0 ? 1 : 0.85;
-    const prediccion = ((140 - edad) * peso * factorSexo) / creatinina_plasma / 60;
+    const prediccion =
+      ((140 - edad) * peso * factorSexo) / creatinina_plasma / 60;
     setPrediccionCockro(prediccion.toFixed(2));
   };
 
@@ -106,7 +105,12 @@ function Aclaramiento() {
 
     // Llama a la función predict del modelo
 
-    if (prediccion < 0 || prediccionMDR4 < 0 || prediccionCKDEPI < 0 || prediccionCockro < 0) {
+    if (
+      prediccion < 0 ||
+      prediccionMDR4 < 0 ||
+      prediccionCKDEPI < 0 ||
+      prediccionCockro < 0
+    ) {
       setError("El cálculo de la Creatina no puede ser negativa");
       return;
     }
@@ -126,11 +130,22 @@ function Aclaramiento() {
         <h1>Estimación del aclaramiento de creatinina</h1>
         <div className="inputGroup">
           <label>Edad:</label>
-          <input type="number" name="edad" value={inputs.edad} required onChange={handleInputChange} />
+          <input
+            type="number"
+            name="edad"
+            value={inputs.edad}
+            required
+            onChange={handleInputChange}
+          />
         </div>
         <div className="inputGroup">
           <label>Peso (Kg):</label>
-          <input type="number" name="peso" value={inputs.peso} onChange={handleInputChange} />
+          <input
+            type="number"
+            name="peso"
+            value={inputs.peso}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="inputGroup">
           <label>Sexo:</label>
@@ -141,7 +156,12 @@ function Aclaramiento() {
         </div>
         <div className="inputGroup">
           <label>Creatinina en Plasma:</label>
-          <input type="number" name="creatinina_plasma" value={inputs.creatinina_plasma} onChange={handleInputChange} />
+          <input
+            type="number"
+            name="creatinina_plasma"
+            value={inputs.creatinina_plasma}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="inputGroup">
           <label>Raza Negra:</label>
@@ -160,7 +180,7 @@ function Aclaramiento() {
             <h2>Aclaramiento de Creatinina</h2>
             <h3>FOTC-HEG: {prediccion}</h3>
             <h3>MDR4: {prediccionMDR4}</h3>
-            <h3>CKD-EPI: {prediccionCKDEPI}</h3>
+            <h3>CKD-EPI 2021: {prediccionCKDEPI}</h3>
             <h3>Cockcroft-Gault: {prediccionCockro}</h3>
             <h3>Random Forest: {prediccionRandomForest}</h3>
           </div>
